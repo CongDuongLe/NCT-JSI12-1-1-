@@ -1,17 +1,16 @@
-import React ,{useEffect}from 'react'
-import { useAuthStore, useDataStore } from '../zustandStore/Buoi4Store'
+import React ,{useEffect, useState}from 'react'
+import { useDataStore } from '../zustandStore/Buoi4Store'
 import axios from 'axios'
+import { useAuthStore } from '../zustandStore/AuthStore'
+import Avatar from '../components/profile/Avatar'
+import SearchInput from '../components/SearchInput'
 
 
 const Buoi4 = () => {
-    // import state
-    const countNumber = useAuthStore(state => state.count)
-    const userName = useAuthStore(state => state.name)
+    const [avatarUrl, setAvatarUrl] = useState('')
 
-    // import function
-    const handleIncrement = useAuthStore(state => state.incrementBy1)
-    const handleDecrement = useAuthStore(state => state.decrementBy1)
-    const handleReset = useAuthStore(state => state.resetCount)
+    const userInfo = useAuthStore(state => state.userInfo)
+    const setUserInfo = useAuthStore(state => state.setUserInfo)
 
     const BASE_URL = useDataStore(state => state.API_URL)
     const setProduct = useDataStore(state => state.setProducts)
@@ -20,7 +19,7 @@ const Buoi4 = () => {
 
 
 
-    console.log(ListProducts, 'ListProducts')
+    console.log(userInfo, 'ListProducts')
 
 
 
@@ -52,19 +51,43 @@ const Buoi4 = () => {
         })
     }
 
+    const updateAvatar = (e) => {
+      e.preventDefault()
+        const newProfileData = {
+            ...userInfo,
+            profileImageUrl : avatarUrl,
+            active : !userInfo.active
+        }
+
+        setUserInfo(newProfileData)
+    }
+
 
 
 
   return (
     <div className="flex flex-col justify-center items-center flex-1 max-h-screen max-w-5xl mx-auto bg-red-200">
+      <Avatar />
+      <div className='flex gap-x-4 items-center justify-center'>
+      <SearchInput 
+        inputValue={avatarUrl}
+        setInputValue={setAvatarUrl}
+      
+      />
+      <button 
+        onClick={(e) => updateAvatar(e)}
+      className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg">Update Avatar</button>
+      </div>
+     
       <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-5xl dark:text-white">
-        {userName} : {countNumber}
+        {userInfo.displayName}
       </h1>
+      
 
-      <div className="inline-flex rounded-md shadow-sm" role="group">
+      {/* <div className="inline-flex rounded-md shadow-sm" role="group">
         <button
           type="button"
-          onClick={handleIncrement}
+      
           className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
         >
           <svg
@@ -84,7 +107,7 @@ const Buoi4 = () => {
         </button>
         <button
           type="button"
-          onClick={handleReset}
+       
           className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
         >
           <svg
@@ -100,7 +123,7 @@ const Buoi4 = () => {
         </button>
         <button
           type="button"
-        onClick={handleDecrement}
+    
           className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-r-md hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
         >
           <svg
@@ -118,7 +141,7 @@ const Buoi4 = () => {
           </svg>
           Decrease by 1
         </button>
-      </div>
+      </div> */}
 
 
     {/* { ListProducts.products.length !==0 &&

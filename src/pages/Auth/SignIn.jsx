@@ -1,12 +1,24 @@
 import React, {useState} from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import { useAuthStore } from '../../zustandStore/AuthStore'
 const SignIn = () => {
 
-    const [emails, setEmail] = useState('')
+    const userInfo = useAuthStore(state => state.userInfo)
+
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     const navigation = useNavigate()
+
+    const goToHomePage = (e) => {
+      e.preventDefault()
+      if(email === userInfo.email && password === userInfo.password){
+        navigation('/')
+      }else{
+        alert('Wrong email or password')
+      }
+    }
+
 
   return (
     <div className="bg-[#B3FFAE] flex flex-1 justify-center items-center h-screen">
@@ -25,7 +37,7 @@ const SignIn = () => {
           type="email"
           className="w-full p-4 bg-transparent border border-gray-200 rounded-lg outline-none"
           placeholder="Enter your email address..."
-          value={emails}
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
@@ -55,7 +67,7 @@ const SignIn = () => {
         </p>
       </div>
       <button
-        // onClick={(e) => goToHomePage(e)}
+        onClick={(e) => goToHomePage(e)}
         type="submit"
         className="inline-flex w-full items-center justify-center px-8 py-4 font-sans font-semibold tracking-wide text-white bg-blue-500 rounded-lg h-[60px]"
       >

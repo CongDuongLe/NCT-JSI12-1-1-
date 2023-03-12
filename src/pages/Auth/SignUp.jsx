@@ -1,13 +1,35 @@
 import React,{useState} from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuthStore } from '../../zustandStore/AuthStore'
+import { v4 as uuidv4 } from 'uuid';
 
 const SignUp = () => {
 
-    const [emails, setEmail] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
-
+    const [displayName, setDisplayName] = useState('')
     const navigation = useNavigate()
+
+    const userInfo = useAuthStore(state => state.userInfo)
+    const setUserInfo = useAuthStore(state => state.setUserInfo)
+
+
+
+    const handleCreateUser = (e) => {
+        e.preventDefault()
+        const data = {
+            email : email,
+            password : password,
+            displayName : displayName,
+            accessToken : uuidv4()
+        }
+        setUserInfo(data)
+        navigation('/signIn')
+        
+    }
+
+
 
 
   return (
@@ -27,7 +49,7 @@ const SignUp = () => {
           type="email"
           className="w-full p-4 bg-transparent border border-gray-200 rounded-lg outline-none"
           placeholder="Enter your email address..."
-          value={emails}
+          value={email}
           onChange={(e) => setEmail(e.target.value) }
         />
       </div>
@@ -63,6 +85,22 @@ const SignUp = () => {
           onChange={(e) => setConfirmPassword(e.target.value) }
         />
       </div>
+      <div className="flex flex-col items-start mb-5 gap-y-3">
+        <label
+          htmlFor="name"
+          className="text-sm font-medium cursor-pointer"
+        >
+          Display Name
+        </label>
+        <input
+          id="name"
+          type="email"
+          className="w-full p-4 bg-transparent border border-gray-200 rounded-lg outline-none"
+          placeholder="Re Enter your password"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value) }
+        />
+      </div>
       <div className="flex items-center justify-end mb-5 text-slate-400">
         <p>Already have an account?</p>
         <p 
@@ -72,7 +110,7 @@ const SignUp = () => {
         </p>
       </div>
       <button
-        // onClick={(e) => handleSignUpUser(e)}
+        onClick={(e) => handleCreateUser(e)}
         type="submit"
         className="inline-flex w-full items-center justify-center px-8 py-4 font-sans font-semibold tracking-wide text-white bg-blue-500 rounded-lg h-[60px]"
       >
