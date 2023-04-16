@@ -1,5 +1,4 @@
 import React ,{useEffect, useState}from 'react'
-import { useDataStore } from '../zustandStore/Buoi4Store'
 import axios from 'axios'
 import { useAuthStore } from '../zustandStore/AuthStore'
 import Avatar from '../components/profile/Avatar'
@@ -12,28 +11,13 @@ const Buoi4 = () => {
     const userInfo = useAuthStore(state => state.userInfo)
     const setUserInfo = useAuthStore(state => state.setUserInfo)
 
-    const BASE_URL = useDataStore(state => state.API_URL)
-    const setProduct = useDataStore(state => state.setProducts)
-
-    const ListProducts = useDataStore(state => state.products)
 
 
 
-    console.log(userInfo, 'ListProducts')
 
 
 
-    const handleGetProduct =  async () => {
-        const res = await axios.get(BASE_URL) 
-        const data = res.data
-        setProduct(data) // data là dữ liệu truyền vào zustand
-        
-    }
 
-    useEffect(() => {
-      handleGetProduct()
-
-    }, [])
 
 
 

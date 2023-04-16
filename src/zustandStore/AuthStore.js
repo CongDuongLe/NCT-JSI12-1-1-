@@ -25,7 +25,7 @@ export const useAuthStore = create(
     }),
     {
       name: 'userInfoStorage', // unique name
-      storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
+      storage: createJSONStorage(() => sessionStorage), // (optional) by default, 'localStorage' is used
     }
   )
 )
