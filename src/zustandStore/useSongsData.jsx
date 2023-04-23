@@ -6,9 +6,15 @@ export const useSongsData = create(
         (set) => ({
             songs: [],
             loading : false,
+            modalVisible: false,
+            editModalVisible: false,
+            selectedItem : {},
 
             setSongs: (songs) => set({ songs }),
             setLoading: (loading) => set({ loading }),
+            setModalVisible: () => set((state) => ({ modalVisible: !state.modalVisible })),
+            setEditModalVisible: () => set((state) => ({ editModalVisible: !state.editModalVisible })),
+            setSelectedItem: (selectedItem) => set({ selectedItem }),
         }),
         {
           name: 'useSongsData', // unique name

@@ -1,9 +1,15 @@
 import React from 'react'
+import { useSongsData } from '../../zustandStore/useSongsData'
 
 const SongsCard = ({songs}) => {
-    console.log(songs)
+
+  const {
+    setEditModalVisible,
+    setSelectedItem
+  } = useSongsData()
 
   return (
+    <>
     <div className="card w-96 bg-base-100 shadow-xl">
   <figure><img src={songs?.imgUrl} alt="Shoes" /></figure>
   <div className="card-body">
@@ -17,7 +23,18 @@ const SongsCard = ({songs}) => {
       <div className="badge badge-outline">{songs.release}</div>
     </div>
   </div>
+  <div 
+    onClick={() => {
+      setEditModalVisible()
+      setSelectedItem(songs)
+    }}
+    className='bg-red-500 absolute top-0 right-0 text-white px-3 py-2 rounded-md self-center cursor-pointer'>
+    Edit
+  </div>
 </div>
+
+</>
+
   )
 }
 
