@@ -12,6 +12,7 @@ import {
     onSnapshot
   } from 'firebase/firestore'
 import SongsCard from './SongsCard'
+import ShoppingCard from '../../pages/cart/ShoppingCard'
 
 const SongsCollections = () => {
 
@@ -419,6 +420,7 @@ const SongsCollections = () => {
 
         {renderModal()}
         {renderEditModal()}
+        <ShoppingCard />
 
     </div>
   )
