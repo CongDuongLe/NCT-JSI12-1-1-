@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useCartData } from "../../zustandStore/useCartData";
@@ -6,9 +6,7 @@ import { db } from "../../firebase/firebase.config";
 import { collection, deleteDoc, doc } from "firebase/firestore";
 
 const ShoppingCard = () => {
-  const { carts, isOpen, setIsOpen } = useCartData();
-  const [currentList, setCurrentList] = useState(carts);
-
+  const { carts, isOpen, setIsOpen, setCarts } = useCartData();
   const subStringDescription = (description, number) => {
     return description.substring(0, number) + "...";
   };
@@ -18,7 +16,8 @@ const ShoppingCard = () => {
     try {
       await deleteDoc(doc(db, "Carts", id));
       const filterCart = currentList.filter((item) => item.id !== id); // hien thi lai list voi dieu kien khong hien thi item ma minh vua click xoa
-      setCurrentList(filterCart);
+      setCarts(filterCart);
+
     } catch(error){
       console.log(error)
     }
@@ -81,7 +80,7 @@ const ShoppingCard = () => {
                             role="list"
                             className="-my-6 divide-y divide-gray-200"
                           >
-                            {currentList.map((item) => (
+                            {carts.map((item) => (
                               <li key={item.id} className="flex py-6">
                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                   <img
