@@ -10,18 +10,14 @@ const Navbar = () => {
     const { setIsOpen, carts, isFetching, setIsFetching, setCarts } =
       useCartData();
 
-    const ref = collection(db, 'carts')
+    const ref = collection(db, 'Carts')
 
     const fetchCarts = async () => {
-      console.log('start fetching')
       setIsFetching(true)
       const res = await getDocs(ref)
       const data = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-      console.log(data, 'data get successfully')
       setCarts(data)
-      console.log('update carts')
       setIsFetching(false)
-      console.log(carts, 'new data in cart store');
     }
 
 

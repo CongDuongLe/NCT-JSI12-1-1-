@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../zustandStore/AuthStore'
 
 import { auth , actionCodeSettings} from '../../firebase/firebase.config'
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword,
+import { signInWithEmailAndPassword,
   signInWithPopup, GoogleAuthProvider, signInAnonymously, sendSignInLinkToEmail
 
 } from 'firebase/auth'

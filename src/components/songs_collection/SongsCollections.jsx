@@ -1,149 +1,150 @@
-import React, {useEffect, useState} from 'react'
-import { db, SONGS_COLLECTION, PLAYERS_COLLECTION } from '../../firebase/firebase.config'
-import { useSongsData } from '../../zustandStore/useSongsData'
+import React, { useEffect, useState } from "react";
 import {
-    collection,
-    getDocs,
-    addDoc,
-    deleteDoc,
-    doc,
-    deleteField,
-    updateDoc,
-    onSnapshot
-  } from 'firebase/firestore'
-import SongsCard from './SongsCard'
-import ShoppingCard from '../../pages/cart/ShoppingCard'
+  db,
+  SONGS_COLLECTION,
+  PLAYERS_COLLECTION,
+} from "../../firebase/firebase.config";
+import { useSongsData } from "../../zustandStore/useSongsData";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  doc,
+  deleteField,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore";
+import SongsCard from "./SongsCard";
+import ShoppingCard from "../../pages/cart/ShoppingCard";
+import ProductView from "../product/ProductView";
 
 const SongsCollections = () => {
+  const [addSong, setAddSong] = useState({
+    name: "",
+    album: "",
+    singer: "",
+    imgUrl: "",
+    release: "",
+  });
 
-    const [addSong, setAddSong] =  useState({
-      name : "",
-      album : "",
-      singer : "",
-      imgUrl : "",
-      release : ""
-    })
+  const {
+    songs,
+    setSongs,
+    loading,
+    setLoading,
+    modalVisible,
+    setModalVisible,
+    editModalVisible,
+    setEditModalVisible,
+    selectedItem,
+    setSelectedItem,
+  } = useSongsData();
 
+  // de query dc data tu firestore, thi minh phai dung cac function build-in cua firebase chu k phai la cac
+  // ham call API binh thuong
 
+  const songRefs = collection(db, SONGS_COLLECTION);
 
-    const {songs, setSongs,loading, setLoading, modalVisible,setModalVisible, editModalVisible, setEditModalVisible, selectedItem, setSelectedItem } = useSongsData()
+  // get song Data from firestore
 
-    // de query dc data tu firestore, thi minh phai dung cac function build-in cua firebase chu k phai la cac
-    // ham call API binh thuong
-
-
-    const songRefs = collection(db, SONGS_COLLECTION)
-
-
-    // get song Data from firestore
-
-    const getSongData = async () => {
-        setLoading(true)
-        const songsDocument = await getDocs(songRefs)
-        const songsData = songsDocument.docs.map((doc) => doc.data())
-        const collectionId = songsDocument.docs.map((doc) => doc.id)
-        const songsDataWithId = songsData.map((item, index) => {
-            return {
-              ...item,
-              id : collectionId[index]
-            }
-         })
-        if (songsDataWithId) {
-            setSongs(songsDataWithId) 
-            setLoading(false)
-        } else {
-            setSongs([])
-            setLoading(false)
-        }
+  const getSongData = async () => {
+    setLoading(true);
+    const songsDocument = await getDocs(songRefs);
+    const songsData = songsDocument.docs.map((doc) => doc.data());
+    const collectionId = songsDocument.docs.map((doc) => doc.id);
+    const songsDataWithId = songsData.map((item, index) => {
+      return {
+        ...item,
+        id: collectionId[index],
+      };
+    });
+    if (songsDataWithId) {
+      setSongs(songsDataWithId);
+      setLoading(false);
+    } else {
+      setSongs([]);
+      setLoading(false);
     }
+  };
 
-
-    const addNewSong = async (e) => {
-      e.preventDefault()
-      try {
-        const result = await addDoc(songRefs, addSong)
-        if (result) { 
-          getSongData()
-          setAddSong({
-            name: "",
-            album: "",
-            singer: "",
-            imgUrl: "",
-            release: "",
-          })
-          setModalVisible()
-        }
-      } catch (error) {
-        alert(error.message)
+  const addNewSong = async (e) => {
+    e.preventDefault();
+    try {
+      const result = await addDoc(songRefs, addSong);
+      if (result) {
+        getSongData();
+        setAddSong({
+          name: "",
+          album: "",
+          singer: "",
+          imgUrl: "",
+          release: "",
+        });
+        setModalVisible();
       }
-     
+    } catch (error) {
+      alert(error.message);
     }
+  };
 
-    const deleteSong = async (e) => { 
-      e.preventDefault()
-      try {
-        await deleteDoc(doc(db, SONGS_COLLECTION, selectedItem.id))
-        getSongData()
-        setEditModalVisible()
-      } catch (error) {
-        alert(error.message)
-      }
-
+  const deleteSong = async (e) => {
+    e.preventDefault();
+    try {
+      await deleteDoc(doc(db, SONGS_COLLECTION, selectedItem.id));
+      getSongData();
+      setEditModalVisible();
+    } catch (error) {
+      alert(error.message);
     }
+  };
 
-
-
-    const updateData = async (e) => {
-      e.preventDefault()
-      try {
-        await updateDoc(doc(db, SONGS_COLLECTION, selectedItem.id), {
-          name : selectedItem.name,
-          album : selectedItem.album,
-          singer : selectedItem.singer,
-          imgUrl : selectedItem.imgUrl,
-          release : selectedItem.release
-        })
-          getSongData()
-          setSelectedItem({
-            name: "",
-            album: "",
-            singer: "",
-            imgUrl: "",
-            release: "",
-          })
-          setEditModalVisible()
-      } catch (error) {
-        alert(error.message)
-      }
+  const updateData = async (e) => {
+    e.preventDefault();
+    try {
+      await updateDoc(doc(db, SONGS_COLLECTION, selectedItem.id), {
+        name: selectedItem.name,
+        album: selectedItem.album,
+        singer: selectedItem.singer,
+        imgUrl: selectedItem.imgUrl,
+        release: selectedItem.release,
+      });
+      getSongData();
+      setSelectedItem({
+        name: "",
+        album: "",
+        singer: "",
+        imgUrl: "",
+        release: "",
+      });
+      setEditModalVisible();
+    } catch (error) {
+      alert(error.message);
     }
+  };
 
+  useEffect(() => {
+    getSongData();
+    return () => {
+      setSongs([]);
+    };
+  }, []);
 
+  if (loading) {
+    return (
+      <>
+        <div
+          aria-label="loading-skeleton"
+          className="w-full h-full bg-slate-200 animate-pulse"
+        ></div>
+      </>
+    );
+  }
 
-
-    useEffect(() => {
-        getSongData()
-      return () => {
-        setSongs([])
-      }
-    }, [])
-
-    if (loading) { 
-      return (
-        <>
-          <div
-            aria-label="loading-skeleton"
-            className="w-full h-full bg-slate-200 animate-pulse"
-          ></div>
-
-        </>
-      )
-    }
-
-
-    const renderModal = () => {
-      return (
-        <>
-          {modalVisible && (
+  const renderModal = () => {
+    return (
+      <>
+        {modalVisible && (
           <div
             className="fixed z-10 overflow-y-auto top-0 w-full left-0 "
             id="modal"
@@ -152,16 +153,17 @@ const SongsCollections = () => {
               <div className="fixed inset-0 transition-opacity">
                 <div
                   onClick={() => {
-                    setModalVisible()
+                    setModalVisible();
                     setAddSong({
                       name: "",
                       album: "",
                       singer: "",
                       imgUrl: "",
                       release: "",
-                    })
+                    });
                   }}
-                  className="absolute inset-0 bg-gray-900 opacity-75" />
+                  className="absolute inset-0 bg-gray-900 opacity-75"
+                />
               </div>
               <span className="hidden sm:inline-block sm:align-middle sm:h-screen">
                 &#8203;
@@ -223,20 +225,18 @@ const SongsCollections = () => {
                       setAddSong({ ...addSong, release: e.target.value })
                     }
                   />
-
-
                 </div>
                 <div className="bg-gray-200 px-4 py-3 text-right">
                   <button
                     onClick={() => {
-                      setModalVisible()
+                      setModalVisible();
                       setAddSong({
                         name: "",
                         album: "",
                         singer: "",
                         imgUrl: "",
                         release: "",
-                      })
+                      });
                     }}
                     type="button"
                     className="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2"
@@ -255,16 +255,14 @@ const SongsCollections = () => {
             </div>
           </div>
         )}
-        
-        </>
-      )
-    }
+      </>
+    );
+  };
 
-
-    const renderEditModal = () => { 
-      return (
-        <>
-          {editModalVisible && (
+  const renderEditModal = () => {
+    return (
+      <>
+        {editModalVisible && (
           <div
             className="fixed z-10 overflow-y-auto top-0 w-full left-0 "
             id="modal"
@@ -273,16 +271,17 @@ const SongsCollections = () => {
               <div className="fixed inset-0 transition-opacity">
                 <div
                   onClick={() => {
-                    setEditModalVisible()
+                    setEditModalVisible();
                     setAddSong({
                       name: "",
                       album: "",
                       singer: "",
                       imgUrl: "",
                       release: "",
-                    })
+                    });
                   }}
-                  className="absolute inset-0 bg-gray-900 opacity-75" />
+                  className="absolute inset-0 bg-gray-900 opacity-75"
+                />
               </div>
               <span className="hidden sm:inline-block sm:align-middle sm:h-screen">
                 &#8203;
@@ -294,7 +293,7 @@ const SongsCollections = () => {
                 aria-labelledby="modal-headline"
               >
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <label>Song Id</label>
+                  <label>Song Id</label>
                   <input
                     type="text"
                     className="w-full bg-gray-100 p-2 mt-2 mb-3 rounded-lg outline-none"
@@ -319,7 +318,10 @@ const SongsCollections = () => {
                     placeholder="Enter song singer"
                     value={selectedItem.singer}
                     onChange={(e) =>
-                      setSelectedItem({ ...selectedItem, singer: e.target.value })
+                      setSelectedItem({
+                        ...selectedItem,
+                        singer: e.target.value,
+                      })
                     }
                   />
                   <label>Album</label>
@@ -329,7 +331,10 @@ const SongsCollections = () => {
                     placeholder="Enter song album"
                     value={selectedItem.album}
                     onChange={(e) =>
-                      setSelectedItem({ ...selectedItem, album: e.target.value })
+                      setSelectedItem({
+                        ...selectedItem,
+                        album: e.target.value,
+                      })
                     }
                   />
                   <label>Image Url</label>
@@ -339,7 +344,10 @@ const SongsCollections = () => {
                     placeholder="Enter song image Url"
                     value={selectedItem.imgUrl}
                     onChange={(e) =>
-                      setSelectedItem({ ...selectedItem, imgUrl: e.target.value })
+                      setSelectedItem({
+                        ...selectedItem,
+                        imgUrl: e.target.value,
+                      })
                     }
                   />
                   <label>Release At</label>
@@ -349,14 +357,15 @@ const SongsCollections = () => {
                     placeholder="Enter release at"
                     value={selectedItem.release}
                     onChange={(e) =>
-                      setSelectedItem({ ...selectedItem, release: e.target.value })
+                      setSelectedItem({
+                        ...selectedItem,
+                        release: e.target.value,
+                      })
                     }
                   />
-
-
                 </div>
                 <div className="bg-gray-200 px-4 py-3 text-right">
-                <button
+                  <button
                     type="button"
                     onClick={(e) => deleteSong(e)}
                     className="py-2 px-4 bg-red-600 text-white rounded hover:bg-red-400 mr-2"
@@ -365,7 +374,7 @@ const SongsCollections = () => {
                   </button>
                   <button
                     onClick={() => {
-                      setEditModalVisible()
+                      setEditModalVisible();
                       setSelectedItem({
                         id: "",
                         name: "",
@@ -373,7 +382,7 @@ const SongsCollections = () => {
                         singer: "",
                         imgUrl: "",
                         release: "",
-                      })
+                      });
                     }}
                     type="button"
                     className="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2"
@@ -387,43 +396,50 @@ const SongsCollections = () => {
                   >
                     Update item
                   </button>
-
                 </div>
               </div>
             </div>
           </div>
         )}
-        
-        </>
-      )
-    }
+      </>
+    );
+  };
 
   return (
-
-    <div className='flex flex-1 h-screen w-full justify-center items-center flex-col gap-y-4 overflow-auto  py-8'>
-        <h1>Songs Collections</h1>
-        <div className='flex flex-1 flex-col  gap-y-4 h-full'>
-
-        {
-            songs?.map(
-                (item, index) => <SongsCard key={index} songs={item} />
-            )
-        }
+    <div className="h-full w-full justify-start items-center py-4">
+      <div className="flex flex-1 flex-col justify-center items-center p-4">
+        <div className="flex flex-1 h-full flex-col justify-center items-center w-10/12 ">
+          <h1 className="text-4xl font-bold mb-2">Songs</h1>
+          <div className="flex justify-center items-center w-full  bg-red-200 rounded-md overflow-y-hidden h-full">
+            <div className="flex flex-row gap-y-4">
+              {songs?.map((item, index) => (
+                <SongsCard key={index} songs={item} />
+              ))}
+            </div>
+          </div>
         </div>
-        <div 
-          onClick={setModalVisible}
-          className='absolute bottom-4 right-10 px-4 py-3 transition-all duration-300 ease-in-out
-             bg-blue-400 rounded-xl text-white active:bg-blue-600 cursor-pointer'  
-             >
-          Add new collection
-        </div>   
+        <div className="flex flex-1 flex-col h-full w-full items-center justify-center mt-4">
+          <h1 className="text-2xl font-bold">All Product</h1>
+          <div className="flex mt-4 mb-12 justify-center items-center w-full z-10">
+            <ProductView />
+          </div>
+        </div>
+      </div>
 
-        {renderModal()}
-        {renderEditModal()}
-        <ShoppingCard />
+      <div
+        onClick={setModalVisible}
+        className="absolute bottom-4 right-10 px-4 py-3 transition-all duration-300 ease-in-out
+             bg-blue-400 rounded-xl text-white active:bg-blue-600 cursor-pointer"
+      >
+        Add new collection
+      </div>
 
+      {renderModal()}
+      {renderEditModal()}
+
+      <ShoppingCard />
     </div>
-  )
-}
+  );
+};
 
-export default SongsCollections
+export default SongsCollections;
