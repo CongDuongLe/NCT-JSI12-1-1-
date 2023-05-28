@@ -23,6 +23,8 @@ export const db = getFirestore(app)
 export const SONGS_COLLECTION = 'Songs'
 export const PLAYERS_COLLECTION = 'Players'
 
+export const CHAT_ROOM = 'ChatRoom'
+
 
 
 export const actionCodeSettings = {

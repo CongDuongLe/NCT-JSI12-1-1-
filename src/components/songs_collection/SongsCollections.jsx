@@ -18,6 +18,8 @@ import {
 import SongsCard from "./SongsCard";
 import ShoppingCard from "../../pages/cart/ShoppingCard";
 import ProductView from "../product/ProductView";
+import ChatPopup from "../chat-popup/ChatPopup";
+import { useCartData } from "../../zustandStore/useCartData";
 
 const SongsCollections = () => {
   const [addSong, setAddSong] = useState({
@@ -27,6 +29,7 @@ const SongsCollections = () => {
     imgUrl: "",
     release: "",
   });
+  const {isPopupOpen} = useCartData()
 
   const {
     songs,
@@ -438,6 +441,9 @@ const SongsCollections = () => {
       {renderEditModal()}
 
       <ShoppingCard />
+      {
+        isPopupOpen && <ChatPopup />
+      }
     </div>
   );
 };

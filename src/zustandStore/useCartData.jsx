@@ -8,11 +8,14 @@ export const useCartData = create(
       selectedItem: {},
       isOpen: false,
       isFetching: false,
+      isPopupOpen: false,
+
 
       setCarts: (data) => set({ carts : data }),
       setSelectedItem: (selectedItem) => set({ selectedItem }),
       setIsOpen: () => set((state) => ({ isOpen: !state.isOpen })),
       setIsFetching: (status) => set({ status }),
+      setIsPopupOpen: () => set((state) => ({ isPopupOpen: !state.isPopupOpen })),
     }),
     {
       name: "useCartData", // unique name

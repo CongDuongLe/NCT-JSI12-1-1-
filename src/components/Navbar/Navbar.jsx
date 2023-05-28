@@ -1,26 +1,30 @@
-import React from 'react'
-import { useAuthStore } from '../../zustandStore/AuthStore'
-import { useCartData } from '../../zustandStore/useCartData'
-import { db } from '../../firebase/firebase.config'
-import { collection, getDocs } from 'firebase/firestore'
+import React from "react";
+import { useAuthStore } from "../../zustandStore/AuthStore";
+import { useCartData } from "../../zustandStore/useCartData";
+import { db } from "../../firebase/firebase.config";
+import { collection, getDocs } from "firebase/firestore";
 
 const Navbar = () => {
+  const { userInfo } = useAuthStore();
+  const {
+    setIsOpen,
+    isPopupOpen,
+    carts,
+    isFetching,
+    setIsFetching,
+    setCarts,
+    setIsPopupOpen,
+  } = useCartData();
 
-    const {userInfo} = useAuthStore()
-    const { setIsOpen, carts, isFetching, setIsFetching, setCarts } =
-      useCartData();
+  const ref = collection(db, "Carts");
 
-    const ref = collection(db, 'Carts')
-
-    const fetchCarts = async () => {
-      setIsFetching(true)
-      const res = await getDocs(ref)
-      const data = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-      setCarts(data)
-      setIsFetching(false)
-    }
-
-
+  const fetchCarts = async () => {
+    setIsFetching(true);
+    const res = await getDocs(ref);
+    const data = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+    setCarts(data);
+    setIsFetching(false);
+  };
 
 
 
@@ -83,6 +87,25 @@ const Navbar = () => {
             />
           </svg>
         </button>
+        <button onClick={setIsPopupOpen} className="btn btn-ghost btn-circle">
+          <div className="indicator">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z"
+              />
+            </svg>
+          <span className="badge badge-xs badge-primary indicator-item animate-bounce"></span>
+          </div>
+        </button>
         <button className="btn btn-ghost btn-circle">
           <div className="indicator">
             <svg
@@ -102,10 +125,13 @@ const Navbar = () => {
             <span className="badge badge-xs badge-primary indicator-item"></span>
           </div>
         </button>
-        <button onClick={() => {
-          setIsOpen()
-          fetchCarts()
-        }} className="btn btn-ghost btn-circle">
+        <button
+          onClick={() => {
+            setIsOpen();
+            fetchCarts();
+          }}
+          className="btn btn-ghost btn-circle"
+        >
           <div className="indicator">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -130,6 +156,6 @@ const Navbar = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Navbar
+export default Navbar;
