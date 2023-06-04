@@ -77,8 +77,6 @@ const SignIn = () => {
 
    const sendEmailDeepLink = async (e) => {
       e.preventDefault()
-      console.log("click")
-
       try {
         const response = await sendSignInLinkToEmail(auth, email, actionCodeSettings)
         console.log(response)
@@ -134,10 +132,19 @@ const SignIn = () => {
         <div className="flex items-center justify-end mb-5 text-slate-400">
           <p>Forgot your password?</p>
           <p
-            onClick={() => navigation('/resetPassword')}
-            className="text-blue-500 underline ml-2"
+            onClick={() => navigation("/forgot")}
+            className="text-blue-500 underline ml-2 cursor-pointer"
           >
             Reset Password
+          </p>
+        </div>
+        <div className="flex items-center justify-end mb-5 text-slate-400">
+          <p>Dont have an account</p>
+          <p
+            onClick={() => navigation("/signup")}
+            className="text-blue-500 underline ml-2 cursor-pointer"
+          >
+            Sign Up
           </p>
         </div>
         <button
@@ -195,7 +202,7 @@ const SignIn = () => {
         </button>
       </form>
     </div>
-  )
+  );
 }
 
 export default SignIn

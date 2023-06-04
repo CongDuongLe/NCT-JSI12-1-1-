@@ -25,7 +25,7 @@ const SignUp = () => {
             accessToken : uuidv4()
         }
         setUserInfo(data)
-        navigation('/signIn')
+        navigation('/login')
         
     }
 
@@ -104,7 +104,7 @@ const SignUp = () => {
       <div className="flex items-center justify-end mb-5 text-slate-400">
         <p>Already have an account?</p>
         <p 
-          onClick={() => navigation('/signIn')}
+          onClick={() => navigation('/login')}
           className="text-blue-500 underline">
           Sign In
         </p>

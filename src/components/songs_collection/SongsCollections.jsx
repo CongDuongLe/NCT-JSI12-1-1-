@@ -29,7 +29,7 @@ const SongsCollections = () => {
     imgUrl: "",
     release: "",
   });
-  const {isPopupOpen} = useCartData()
+  const { isPopupOpen } = useCartData();
 
   const {
     songs,
@@ -409,12 +409,12 @@ const SongsCollections = () => {
   };
 
   return (
-    <div className="h-full w-full justify-start items-center py-4">
+    <div className="h-full w-full justify-start items-center py-4 bg-white">
       <div className="flex flex-1 flex-col justify-center items-center p-4">
-        <div className="flex flex-1 h-full flex-col justify-center items-center w-10/12 ">
-          <h1 className="text-4xl font-bold mb-2">Songs</h1>
-          <div className="flex justify-center items-center w-full  bg-red-200 rounded-md overflow-y-hidden h-full">
-            <div className="flex flex-row gap-y-4">
+        <div className="flex flex-1 xl:h-[75%] flex-col justify-center items-center xl:w-[80%]">
+          <h1 className="xl:text-4xl text-[22px] font-bold mb-2">Songs</h1>
+          <div className="flex justify-center items-center xl:w-full  rounded-md overflow-x-auto  scrollbar-hide snap-x xl:h-full h-[312px] w-[256px] ">
+            <div className="flex xl:flex-row flex-col gap-y-4">
               {songs?.map((item, index) => (
                 <SongsCard key={index} songs={item} />
               ))}
@@ -441,9 +441,7 @@ const SongsCollections = () => {
       {renderEditModal()}
 
       <ShoppingCard />
-      {
-        isPopupOpen && <ChatPopup />
-      }
+      {isPopupOpen && <ChatPopup />}
     </div>
   );
 };

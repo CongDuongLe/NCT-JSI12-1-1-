@@ -65,8 +65,8 @@ const Navbar = () => {
           </ul>
         </div>
       </div>
-      <div className="navbar-center">
-        <a className="btn btn-ghost normal-case text-xl">
+      <div className="navbar-center xs:hidden">
+        <a className="btn btn-ghost normal-case text-xl hidden xl:flex">
           {userInfo?.displayName}
         </a>
       </div>

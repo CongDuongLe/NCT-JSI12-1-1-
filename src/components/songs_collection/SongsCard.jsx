@@ -6,12 +6,12 @@ const SongsCard = ({ songs }) => {
 
   return (
     <>
-      <div className="card w-96 bg-base-100 shadow-xl my-4 mr-4">
+      <div className="card xl:w-96 sm:w-[128px] sm:h-[50%] bg-base-100 shadow-xl xl:my-4 xl:mr-4 sm:mr-2">
         <figure>
           <img src={songs?.imgUrl} alt="Shoes" />
         </figure>
         <div className="card-body">
-          <h2 className="card-title">
+          <h2 className="xl:card-title text-[22px] font-semibold">
             {songs?.name}
             <div className="badge badge-secondary">NEW</div>
           </h2>

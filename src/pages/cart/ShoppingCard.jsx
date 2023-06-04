@@ -24,10 +24,6 @@ const ShoppingCard = () => {
 
 
   }
-
-  console.log(carts)
-
-
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-30" onClose={setIsOpen}>
